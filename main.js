@@ -151,9 +151,51 @@ function flowMain() {
     }
 
     console.log("=== 所有流程执行完成 ===");
+    // 发送成功推送通知
+    sendBarkNotification("校友邦签到成功", "所有流程已执行完成");
   } catch (e) {
     console.error("流程执行出错: " + e);
     console.error("错误堆栈: " + e.stack);
+    // 发送失败推送通知
+    sendBarkNotification("校友邦签到失败", "流程执行出错: " + e.toString());
+  }
+}
+
+// 简单的 URL 编码函数
+function encodeUrl(str) {
+  var s = str;
+  s = s.replace(/ /g, "%20");
+  s = s.replace(/\n/g, "%0A");
+  s = s.replace(/:/g, "%3A");
+  s = s.replace(/;/g, "%3B");
+  s = s.replace(/=/g, "%3D");
+  s = s.replace(/\?/g, "%3F");
+  s = s.replace(/&/g, "%26");
+  s = s.replace(/\+/g, "%2B");
+  s = s.replace(/#/g, "%23");
+  s = s.replace(/\(/g, "%28");
+  s = s.replace(/\)/g, "%29");
+  s = s.replace(/,/g, "%2C");
+  return s;
+}
+
+// 发送 Bark 推送通知
+function sendBarkNotification(title, body) {
+  try {
+    var deviceKey = "atZXUVSwCpNZc8GuBdbkmW";
+    var encodedTitle = encodeUrl(title);
+    var encodedBody = encodeUrl(body);
+    var url = "https://api.day.app/" + deviceKey + "/" + encodedTitle + "/" + encodedBody;
+    
+    console.log("发送推送通知: " + title);
+    var response = http.get(url);
+    if (response && response.statusCode === 200) {
+      console.log("推送通知发送成功");
+    } else {
+      console.warn("推送通知发送失败");
+    }
+  } catch (e) {
+    console.warn("发送推送通知时出错: " + e);
   }
 }
 
@@ -812,13 +854,13 @@ function handleCheckinOrCheckout() {
 }
 
 function clickByTextExactly(t) {
-  const n = text(t).findOne(800);
+  var n = text(t).findOne(800);
   if (n) n.click();
 }
 
 function clickByRect(left, top, right, bottom) {
-  const x = (left + right) / 2;
-  const y = (top + bottom) / 2;
+  var x = (left + right) / 2;
+  var y = (top + bottom) / 2;
   press(x, y, 80);
 }
 
