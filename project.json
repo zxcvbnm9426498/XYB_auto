@@ -1,0 +1,8 @@
+{
+  "name": "基于autojs实现校友邦自动化签到",
+  "packageName": "com.xybqd.autojs.alumnibang",
+  "versionName": "2.1.0",
+  "versionCode": 210,
+  "main": "main.js"
+}
+
